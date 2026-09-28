@@ -29,7 +29,7 @@ export default function LifeLedger() {
     loadProfile();
   }, []);
 
-  const categories: (keyof typeof (user?.categoryLevels || {}))[] = ['Health', 'Creative', 'Mind', 'Social', 'Career'];
+  const categories: ('Health' | 'Creative' | 'Mind' | 'Social' | 'Career')[] = ['Health', 'Creative', 'Mind', 'Social', 'Career'];
 
   return (
     <div className="max-w-5xl mx-auto p-8 space-y-12 animate-in fade-in duration-700">
