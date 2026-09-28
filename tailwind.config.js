@@ -12,14 +12,14 @@ module.exports = {
       },
       colors: {
         obsidian: {
-          base: '#050505',
-          surface: '#0A0A0A',
-          border: '#1A1A1A',
+          base: 'var(--color-obsidian-base)',
+          surface: 'var(--color-obsidian-surface)',
+          border: 'var(--color-obsidian-border)',
         },
         neonBlue: {
-          glow: '#00F0FF',
-          accent: '#00B4D8',
-          dim: '#0077B6',
+          glow: 'var(--color-neon-blue-glow)',
+          accent: 'var(--color-neon-blue-accent)',
+          dim: 'var(--color-neon-blue-dim)',
         },
       },
       animation: {

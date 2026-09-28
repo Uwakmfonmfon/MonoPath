@@ -6,11 +6,19 @@
   --foreground-rgb: 255, 255, 255;
   --background-start-rgb: 5, 5, 5;
   --background-end-rgb: 10, 10, 10;
+
+  /* Architect's Ledger Tokens */
+  --color-obsidian-base: #050505;
+  --color-obsidian-surface: #0A0A0A;
+  --color-obsidian-border: #1A1A1A;
+  --color-neon-blue-glow: #00F0FF;
+  --color-neon-blue-accent: #00B4D8;
+  --color-neon-blue-dim: #0077B6;
 }
 
 body {
   color: rgb(var(--foreground-rgb));
-  background-color: #050505;
+  background-color: var(--color-obsidian-base);
   background-image:
     linear-gradient(to right, rgba(26, 26, 26, 0.3) 1px, transparent 1px),
     linear-gradient(to bottom, rgba(26, 26, 26, 0.3) 1px, transparent 1px);
