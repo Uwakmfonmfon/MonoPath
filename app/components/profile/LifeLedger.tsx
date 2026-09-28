@@ -11,8 +11,13 @@ export default function LifeLedger() {
     async function loadProfile() {
       const userData = await db.getUser('user_1');
       // Mocking the new category levels if they don't exist for v1 compatibility
-      const userWithCats = {
+      const userWithCats: User = {
         ...userData,
+        id: userData?.id || 'guest',
+        username: userData?.username || 'Architect',
+        currentLoad: userData?.currentLoad || 0,
+        maxLoad: userData?.maxLoad || 10,
+        createdAt: userData?.createdAt || new Date().toISOString(),
         categoryLevels: userData?.categoryLevels || {
           Health: 1, Creative: 1, Mind: 1, Social: 1, Career: 1
         },

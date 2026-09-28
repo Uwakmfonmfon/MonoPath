@@ -25,7 +25,7 @@ export async function POST(req: NextRequest) {
       'default': 'Focus on the most basic iteration of the task first. Set a timer for 10 minutes and produce an imperfect version. Analysis comes after execution.'
     };
 
-    const response = mockResponses[skill?.name.toLowerCase()] || mockResponses['default'];
+    const response = mockResponses[skill?.name?.toLowerCase() || 'default'] || mockResponses['default'];
 
     return NextResponse.json({
       answer: response,

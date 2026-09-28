@@ -71,7 +71,7 @@ export async function POST(req: NextRequest) {
         id: Math.random().toString(36).substr(2, 9),
         userId,
         name: goal,
-        category: 'General',
+        category: 'Creative',
         description: `Learning ${goal} based on intent: ${intake.why}`,
         totalXp: 0,
         hoursInvested: 0,

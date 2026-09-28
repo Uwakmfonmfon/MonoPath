@@ -1,7 +1,7 @@
 "use client";
 import React, { useState } from 'react';
 
-export default function AssistantPanel({ task, skillId }: { task: any, skillId: string }) {
+export default function AssistantPanel({ task = { id: 'default_task' }, skillId = 'default_skill' }: { task?: any, skillId?: string }) {
   const [query, setQuery] = useState('');
   const [answer, setAnswer] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);

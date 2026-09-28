@@ -11,12 +11,12 @@ export default function DashboardPage() {
           <h1 className="text-3xl font-extrabold text-slate-900">Your Current Path</h1>
           <p className="text-slate-600">Focus on the next decisive step.</p>
         </header>
-        <TaskBoard />
+        <TaskBoard skillId="default_skill" />
       </main>
 
       {/* Side Panel for Assistant */}
       <aside className="w-96 bg-white border-l border-slate-200 shadow-xl flex flex-col">
-        <AssistantPanel />
+        <AssistantPanel task={{ id: 'default_task' }} skillId="default_skill" />
       </aside>
     </div>
   );

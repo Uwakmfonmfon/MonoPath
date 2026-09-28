@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { db } from '@/lib/supabase';
 import { Skill, Level, Task, TaskStatus } from '@/types';
 
-export default function TaskBoard({ skillId }: { skillId: string }) {
+export default function TaskBoard({ skillId = 'default_skill' }: { skillId?: string }) {
   const [skill, setSkill] = useState<Skill | null>(null);
   const [levels, setLevels] = useState<Level[]>([]);
   const [tasks, setTasks] = useState<Task[]>([]);
