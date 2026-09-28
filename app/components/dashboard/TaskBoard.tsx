@@ -1,3 +1,4 @@
+"use client";
 import React, { useState, useEffect } from 'react';
 import { db } from '@/lib/supabase';
 import { Skill, Level, Task, TaskStatus } from '@/types';
