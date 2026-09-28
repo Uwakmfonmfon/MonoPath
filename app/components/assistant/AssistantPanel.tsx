@@ -31,42 +31,75 @@ export default function AssistantPanel({ task = { id: 'default_task' }, skillId 
   }
 
   return (
-    <div className="mt-12 p-6 bg-zinc-900 border border-zinc-800 rounded-2xl max-w-2xl w-full animate-in slide-in-from-bottom-4">
-      <div className="flex items-center gap-2 mb-4">
-        <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse" />
-        <span className="text-xs font-mono text-zinc-500 uppercase tracking-widest">Single-Answer Assistant</span>
-      </div>
+    <div className="relative mt-12 animate-boot duration-1000">
+      {/* Holographic Background Glow */}
+      <div className="absolute -inset-1 bg-gradient-to-r from-neonBlue-glow/20 to-transparent rounded-2xl blur-xl opacity-50" />
 
-      {answer ? (
-        <div className="space-y-4">
-          <p className="text-lg text-zinc-200 leading-relaxed">
-            {answer}
-          </p>
-          <button
-            onClick={() => { setAnswer(null); setQuery(''); }}
-            className="text-sm text-blue-500 hover:text-blue-400 transition-all"
-          >
-            Ask something else
-          </button>
+      <div className="relative p-6 backdrop-blur-md bg-white/5 border border-white/10 rounded-2xl max-w-2xl w-full shadow-2xl">
+        {/* Top Accent Bar */}
+        <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-neonBlue-glow to-transparent opacity-50" />
+
+        <div className="flex items-center gap-2 mb-6">
+          <div className="w-2 h-2 bg-neonBlue-glow rounded-full animate-pulse shadow-[0_0_8px_#00F0FF]" />
+          <span className="text-[10px] font-mono text-zinc-500 uppercase tracking-[0.3em]">
+            Synthesizer HUD v1.0.4
+          </span>
         </div>
-      ) : (
-        <div className="flex gap-3">
-          <input
-            className="flex-1 bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-blue-500 transition-all"
-            placeholder="I'm stuck on..."
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            onKeyDown={(e) => e.key === 'Enter' && askAssistant()}
-          />
-          <button
-            onClick={askAssistant}
-            disabled={isLoading}
-            className="bg-blue-600 hover:bg-blue-500 text-white px-6 py-3 rounded-xl font-semibold transition-all disabled:opacity-50"
-          >
-            {isLoading ? 'Synthesizing...' : 'Ask'}
-          </button>
-        </div>
-      )}
+
+        {answer ? (
+          <div className="space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-500">
+            <div className="relative">
+              <div className="absolute -left-4 top-0 bottom-0 w-px bg-neonBlue-glow/30" />
+              <p className="text-lg text-zinc-200 leading-relaxed font-light pl-4">
+                {answer}
+              </p>
+            </div>
+
+            <button
+              onClick={() => { setAnswer(null); setQuery(''); }}
+              className="group flex items-center gap-2 text-xs font-mono text-neonBlue-accent hover:text-neonBlue-glow transition-all uppercase tracking-widest"
+            >
+              <span className="group-hover:-translate-x-1 transition-transform">←</span>
+              New Inquiry
+            </button>
+          </div>
+        ) : (
+          <div className="flex flex-col gap-4">
+            <div className="relative group">
+              <input
+                className="w-full bg-obsidian-base/50 border border-white/10 rounded-xl px-4 py-4 text-white placeholder-zinc-600 focus:outline-none focus:border-neonBlue-glow transition-all font-mono text-sm"
+                placeholder="Input query to Synthesizer..."
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                onKeyDown={(e) => e.key === 'Enter' && askAssistant()}
+              />
+              <div className="absolute right-3 top-1/2 -translate-y-1/2 text-[10px] font-mono text-zinc-700 pointer-events-none uppercase">
+                CMD+Enter
+              </div>
+            </div>
+
+            <button
+              onClick={askAssistant}
+              disabled={isLoading}
+              className="w-full py-3 rounded-xl font-mono text-xs uppercase tracking-widest transition-all disabled:opacity-30
+                bg-white/5 text-white border border-white/10
+                hover:bg-neonBlue-glow hover:text-obsidian-base hover:border-neonBlue-glow
+                active:scale-[0.98] shadow-lg"
+            >
+              {isLoading ? (
+                <span className="flex items-center justify-center gap-2">
+                  <span className="w-1 h-1 bg-white rounded-full animate-bounce" />
+                  <span className="w-1 h-1 bg-white rounded-full animate-bounce [animation-delay:0.2s]" />
+                  <span className="w-1 h-1 bg-white rounded-full animate-bounce [animation-delay:0.4s]" />
+                  Synthesizing...
+                </span>
+              ) : (
+                'Initiate Synthesis'
+              )}
+            </button>
+          </div>
+        )}
+      </div>
     </div>
   );
 }

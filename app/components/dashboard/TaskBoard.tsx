@@ -40,7 +40,7 @@ export default function TaskBoard({ skillId = 'default_skill' }: { skillId?: str
         body: JSON.stringify({
           userId: 'user_1',
           goal: skill.name,
-          intake: skill.intakeData, // In a real app, we'd trigger the intake flow first
+          intake: skill.intakeData,
           skillId: skill.id,
           isReflow: true,
         }),
@@ -105,28 +105,30 @@ export default function TaskBoard({ skillId = 'default_skill' }: { skillId?: str
   }, [activeLevelId]);
 
   return (
-    <div className="space-y-8 animate-in fade-in duration-500">
+    <div className="space-y-12 animate-boot duration-700">
+      {/* Header Section */}
       <div className="flex justify-between items-end">
         <div className="space-y-2">
           <div className="flex items-center gap-3">
-            <h2 className="text-4xl font-bold font-display">{skill?.name}</h2>
-            <span className="px-3 py-1 bg-zinc-800 text-zinc-400 rounded-full text-xs font-mono uppercase tracking-tighter border border-zinc-700">
+            <h2 className="text-5xl font-bold font-display text-white tracking-tighter">{skill?.name}</h2>
+            <span className="px-3 py-1 bg-obsidian-surface text-neonBlue-accent rounded-full text-xs font-mono uppercase tracking-widest border border-obsidian-border shadow-[0_0_10px_rgba(0,240,255,0.1)]">
               {skill?.category}
             </span>
           </div>
-          <p className="text-zinc-400">{skill?.description}</p>
+          <p className="text-zinc-500 font-mono text-sm">{skill?.description}</p>
         </div>
+
         <div className="text-right space-y-4">
           <div className="flex flex-col items-end">
-            <div className="text-xs font-mono text-blue-400 uppercase tracking-widest">Current Level</div>
-            <div className="text-3xl font-bold font-display">LVL {levels.find(l => l.id === activeLevelId)?.levelNumber || 1}</div>
+            <div className="text-[10px] font-mono text-neonBlue-accent uppercase tracking-[0.2em] mb-1">Current Coordinate</div>
+            <div className="text-4xl font-bold font-display text-white">LVL {levels.find(l => l.id === activeLevelId)?.levelNumber || 1}</div>
           </div>
-          <div className="flex items-center gap-2 bg-zinc-900 p-2 rounded-lg border border-zinc-800">
-            <span className="text-xs font-mono text-zinc-500 uppercase">Invested:</span>
-            <span className="text-sm font-bold text-white">{skill?.hoursInvested || 0}h</span>
+          <div className="flex items-center gap-3 bg-obsidian-surface p-2 px-4 rounded-xl border border-obsidian-border shadow-inner">
+            <span className="text-[10px] font-mono text-zinc-500 uppercase tracking-wider">Invested:</span>
+            <span className="text-sm font-bold font-mono text-white">{skill?.hoursInvested || 0}h</span>
             <button
               onClick={() => logHours(1)}
-              className="ml-2 p-1 bg-zinc-800 hover:bg-zinc-700 rounded text-zinc-400 text-xs transition-all"
+              className="ml-2 px-2 py-0.5 bg-neonBlue-dim/20 hover:bg-neonBlue-dim/40 text-neonBlue-glow rounded text-[10px] font-mono transition-all border border-neonBlue-dim/30"
             >
               +1h
             </button>
@@ -134,73 +136,113 @@ export default function TaskBoard({ skillId = 'default_skill' }: { skillId?: str
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="space-y-4">
-          <h3 className="text-sm font-mono text-zinc-500 uppercase">Progression Path</h3>
-          <div className="flex flex-col gap-3">
-            {levels.map((lvl, idx) => (
+      {/* Main Content Area */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
+
+        {/* The Mastery Timeline (Left Column) */}
+        <div className="lg:col-span-4 space-y-6">
+          <h3 className="text-xs font-mono text-zinc-600 uppercase tracking-[0.3em] text-center lg:text-left">Progression Path</h3>
+
+          <div className="relative flex flex-col items-center lg:items-start gap-0 py-4">
+            {/* The Vertical Spine */}
+            <div className="absolute left-4 lg:left-6 top-0 bottom-0 w-px bg-obsidian-border">
               <div
-                key={lvl.id}
-                className={`p-4 rounded-xl border transition-all cursor-pointer ${
-                  lvl.id === activeLevelId
-                    ? 'border-blue-500 bg-blue-500/10 text-blue-400'
-                    : lvl.isCompleted
-                      ? 'border-zinc-700 bg-zinc-800/50 text-zinc-500'
-                      : 'border-zinc-900 bg-zinc-950 text-zinc-700 opacity-50'
-                }`}
-                onClick={() => !lvl.isCompleted && lvl.id === activeLevelId && setActiveLevelId(lvl.id)}
-              >
-                <div className="flex justify-between items-center">
-                  <span className="font-semibold">Level {lvl.levelNumber}: {lvl.title}</span>
-                  {lvl.isCompleted && <span>✅</span>}
+                className="absolute top-0 left-0 w-px bg-neonBlue-glow shadow-[0_0_8px_#00F0FF] transition-all duration-1000"
+                style={{
+                  height: `${(levels.filter(l => l.isCompleted).length / levels.length) * 100}%`,
+                }}
+              />
+            </div>
+
+            {/* The Nodes */}
+            {levels.map((lvl) => {
+              const isActive = lvl.id === activeLevelId;
+              const isCompleted = lvl.isCompleted;
+
+              return (
+                <div
+                  key={lvl.id}
+                  className="relative pl-12 pr-4 py-6 w-full cursor-pointer group"
+                  onClick={() => setActiveLevelId(lvl.id)}
+                >
+                  {/* Node Circle */}
+                  <div className={`absolute left-2 top-1/2 -translate-y-1/2 w-4 h-4 rounded-full z-10 transition-all duration-500 ${
+                    isCompleted
+                      ? 'bg-neonBlue-glow shadow-[0_0_12px_#00F0FF] scale-125'
+                      : isActive
+                        ? 'bg-obsidian-surface border-2 border-neonBlue-glow animate-pulse-glow scale-110'
+                        : 'bg-obsidian-border border border-zinc-800'
+                  }`} />
+
+                  <div className={`transition-all duration-300 ${isActive ? 'translate-x-2' : ''}`}>
+                    <div className={`text-xs font-mono uppercase tracking-tighter mb-1 ${isActive ? 'text-neonBlue-accent' : 'text-zinc-600'}`}>
+                      Level {lvl.levelNumber}
+                    </div>
+                    <div className={`font-semibold transition-colors ${isActive ? 'text-white' : 'text-zinc-500 group-hover:text-zinc-300'}`}>
+                      {lvl.title}
+                    </div>
+                  </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
 
-        <div className="md:col-span-2 space-y-4">
+        {/* The Batch Execution (Right Column) */}
+        <div className="lg:col-span-8 space-y-6">
           <div className="flex justify-between items-center">
-            <h3 className="text-sm font-mono text-zinc-500 uppercase">Current Batch</h3>
+            <h3 className="text-xs font-mono text-zinc-600 uppercase tracking-[0.3em]">Current Batch</h3>
             <button
               onClick={handleReflow}
               disabled={isReflowing}
-              className="text-xs text-blue-400 hover:text-blue-300 transition-all font-mono uppercase disabled:opacity-50"
+              className="text-xs text-neonBlue-accent hover:text-neonBlue-glow transition-all font-mono uppercase disabled:opacity-30 flex items-center gap-2 group"
             >
-              {isReflowing ? 'Reflowing...' : '🔄 Reflow Path'}
+              <span className="group-hover:rotate-180 transition-transform duration-500">🔄</span>
+              {isReflowing ? 'Recalculating...' : 'Reflow Path'}
             </button>
           </div>
-          <div className="grid grid-cols-1 gap-3">
-            {tasks.map(task => (
+
+          <div className="grid grid-cols-1 gap-4">
+            {tasks.length > 0 ? tasks.map(task => (
               <div
                 key={task.id}
-                className={`p-5 rounded-2xl border transition-all flex items-center justify-between ${
+                className={`group p-6 rounded-2xl border transition-all flex items-center justify-between ${
                   task.status === 'Completed'
-                    ? 'bg-zinc-900 border-zinc-800 opacity-50'
-                    : 'bg-zinc-800 border-zinc-700 hover:border-blue-500'
+                    ? 'bg-obsidian-surface/30 border-obsidian-border opacity-40'
+                    : 'bg-obsidian-surface border-obsidian-border hover:border-neonBlue-dim/50 hover:bg-obsidian-surface/80 shadow-lg'
                 }`}
               >
-                <div className="flex items-center gap-4">
+                <div className="flex items-center gap-6">
                   <div
                     onClick={() => completeTask(task.id)}
-                    className={`w-6 h-6 rounded-md border-2 cursor-pointer flex items-center justify-center transition-all ${
-                      task.status === 'Completed' ? 'bg-blue-500 border-blue-500' : 'border-zinc-600 hover:border-blue-400'
+                    className={`w-6 h-6 rounded-lg border-2 cursor-pointer flex items-center justify-center transition-all ${
+                      task.status === 'Completed'
+                        ? 'bg-neonBlue-glow border-neonBlue-glow text-obsidian-base'
+                        : 'border-zinc-700 group-hover:border-neonBlue-accent'
                     }`}
                   >
-                    {task.status === 'Completed' && <span className="text-white text-xs">✓</span>}
+                    {task.status === 'Completed' && <span className="text-xs font-bold">✓</span>}
                   </div>
                   <div>
-                    <div className={`font-medium ${task.status === 'Completed' ? 'line-through text-zinc-500' : 'text-zinc-100'}`}>
+                    <div className={`font-medium text-lg transition-all ${task.status === 'Completed' ? 'line-through text-zinc-600' : 'text-zinc-100'}`}>
                       {task.title}
                     </div>
-                    <div className="text-sm text-zinc-400">{task.description}</div>
+                    <div className="text-sm text-zinc-500 font-mono">{task.description}</div>
                   </div>
                 </div>
-                <div className="text-xs font-mono text-zinc-500">
-                  +{task.xpReward} XP
+                <div className="text-right">
+                  <div className="text-[10px] font-mono text-zinc-600 uppercase tracking-widest mb-1">Reward</div>
+                  <div className={`text-sm font-bold font-mono ${task.status === 'Completed' ? 'text-zinc-700' : 'text-neonBlue-accent'}`}>
+                    +{task.xpReward} XP
+                  </div>
                 </div>
               </div>
-            ))}
+            )) : (
+              <div className="p-12 border border-dashed border-obsidian-border rounded-3xl text-center space-y-4">
+                <div className="text-zinc-600 font-mono text-sm">No tasks in current coordinate.</div>
+                <div className="text-xs text-zinc-700 font-mono">Select a level from the path to initialize batch.</div>
+              </div>
+            )}
           </div>
         </div>
       </div>
