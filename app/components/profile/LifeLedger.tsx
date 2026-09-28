@@ -98,7 +98,7 @@ export default function LifeLedger() {
           </div>
 
           {/* Constellation Map Container */}
-          <div className="relative h-[600px] bg-obsidian-surface border border-obsidian-border rounded-3xl overflow-hidden shadow-inner">
+          <div className="relative h-[600px] bg-obsidian-surface bg-[radial-gradient(circle_at_center,rgba(0,240,255,0.03)_0%,transparent_70%)] border border-obsidian-border rounded-3xl overflow-hidden shadow-inner">
             {/* Background Coordinate Grid */}
             <div className="absolute inset-0 opacity-20"
                  style={{ backgroundImage: 'radial-gradient(circle, #1A1A1A 1px, transparent 1px)', backgroundSize: '40px 40px' }} />
@@ -149,12 +149,12 @@ export default function LifeLedger() {
                       top: `calc(50% + ${Math.sin(angle) * radius}px)`,
                     }}
                   >
-                    <div className="relative flex flex-col items-center">
+                    <div className="relative flex flex-col items-center group-hover:scale-150 transition-all duration-300 ease-out">
                       {/* The Star */}
                       <div className={`w-3 h-3 rounded-full transition-all duration-300 ${
                         skill.status === 'Mastered'
                           ? 'bg-yellow-400 shadow-[0_0_15px_#facc15]'
-                          : 'bg-neonBlue-glow shadow-[0_0_10px_#00F0FF]'
+                          : 'bg-neonBlue-glow shadow-[0_0_10px_#00F0FF] group-hover:shadow-[0_0_20px_#00F0FF]'
                       }`} />
 
                       {/* Tooltip/Label */}

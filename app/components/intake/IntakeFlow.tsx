@@ -177,7 +177,7 @@ export default function ConversationalIntake() {
         <div className="relative z-10 p-6 bg-obsidian-base border-t border-obsidian-border flex gap-4">
           <div className="relative flex-1">
             <input
-              className="w-full bg-obsidian-surface border border-obsidian-border rounded-xl px-4 py-4 text-white placeholder-zinc-600 focus:outline-none focus:border-neonBlue-glow transition-all font-mono text-sm"
+              className="w-full bg-obsidian-surface border border-obsidian-border rounded-xl px-4 py-4 text-white placeholder-zinc-600 focus:outline-none focus:border-neonBlue-glow focus:ring-2 focus:ring-neonBlue-glow/20 transition-all font-mono text-sm"
               placeholder="Type your response..."
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}

@@ -207,7 +207,7 @@ export default function TaskBoard({ skillId = 'default_skill' }: { skillId?: str
             {tasks.length > 0 ? tasks.map(task => (
               <div
                 key={task.id}
-                className={`group p-6 rounded-2xl border transition-all duration-500 flex items-center justify-between ${
+                className={`group p-6 rounded-2xl border transition-all duration-500 flex items-center justify-between active:scale-95 ease-out ${
                   task.status === 'Completed'
                     ? 'bg-obsidian-surface/30 border-obsidian-border opacity-40'
                     : 'bg-obsidian-surface border-t-white/10 border-x-obsidian-border border-b-black/50 hover:border-neonBlue-dim/50 hover:bg-obsidian-surface/80 shadow-2xl shadow-black'
