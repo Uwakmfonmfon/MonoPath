@@ -206,18 +206,18 @@ export default function TaskBoard({ skillId = 'default_skill' }: { skillId?: str
             {tasks.length > 0 ? tasks.map(task => (
               <div
                 key={task.id}
-                className={`group p-6 rounded-2xl border transition-all flex items-center justify-between ${
+                className={`group p-6 rounded-2xl border transition-all duration-500 flex items-center justify-between ${
                   task.status === 'Completed'
                     ? 'bg-obsidian-surface/30 border-obsidian-border opacity-40'
-                    : 'bg-obsidian-surface border-obsidian-border hover:border-neonBlue-dim/50 hover:bg-obsidian-surface/80 shadow-lg'
+                    : 'bg-obsidian-surface border-t-white/10 border-x-obsidian-border border-b-black/50 hover:border-neonBlue-dim/50 hover:bg-obsidian-surface/80 shadow-2xl shadow-black'
                 }`}
               >
                 <div className="flex items-center gap-6">
                   <div
                     onClick={() => completeTask(task.id)}
-                    className={`w-6 h-6 rounded-lg border-2 cursor-pointer flex items-center justify-center transition-all ${
+                    className={`w-6 h-6 rounded-lg border-2 cursor-pointer flex items-center justify-center transition-all duration-500 ${
                       task.status === 'Completed'
-                        ? 'bg-neonBlue-glow border-neonBlue-glow text-obsidian-base'
+                        ? 'bg-neonBlue-glow border-neonBlue-glow text-obsidian-base scale-95'
                         : 'border-zinc-700 group-hover:border-neonBlue-accent'
                     }`}
                   >
@@ -238,9 +238,16 @@ export default function TaskBoard({ skillId = 'default_skill' }: { skillId?: str
                 </div>
               </div>
             )) : (
-              <div className="p-12 border border-dashed border-obsidian-border rounded-3xl text-center space-y-4">
-                <div className="text-zinc-600 font-mono text-sm">No tasks in current coordinate.</div>
-                <div className="text-xs text-zinc-700 font-mono">Select a level from the path to initialize batch.</div>
+              <div className="p-16 bg-obsidian-surface/50 backdrop-blur-sm border border-white/5 rounded-3xl text-center space-y-6 shadow-inner">
+                <div className="flex justify-center">
+                  <div className="w-16 h-16 rounded-full bg-neonBlue-glow/10 flex items-center justify-center text-neonBlue-glow animate-bounce shadow-[0_0_20px_rgba(0,240,255,0.3)]">
+                    <Zap size={32} />
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  <div className="text-zinc-300 font-mono text-lg tracking-tight">Your path is currently silent.</div>
+                  <div className="text-xs text-zinc-600 font-mono uppercase tracking-widest">Select a coordinate from the path to initialize your batch.</div>
+                </div>
               </div>
             )}
           </div>

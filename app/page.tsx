@@ -4,7 +4,11 @@ import { ArrowRight, Target, Zap, BookOpen } from 'lucide-react';
 
 export default function HomePage() {
   return (
-    <div className="min-h-screen bg-obsidian-base text-zinc-100 font-sans relative overflow-hidden">
+    <div className="min-h-screen bg-[#050505] text-zinc-100 font-sans relative overflow-hidden">
+      {/* Atmospheric Ambient Blobs */}
+      <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-neonBlue-glow/10 blur-[120px] rounded-full pointer-events-none animate-pulse" />
+      <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-purple-500/5 blur-[120px] rounded-full pointer-events-none" />
+
       {/* Background Architecture Elements */}
       <div className="absolute inset-0 opacity-20 pointer-events-none"
            style={{ backgroundImage: 'linear-gradient(#1A1A1A 1px, transparent 1px), linear-gradient(90deg, #1A1A1A 1px, transparent 1px)', backgroundSize: '40px 40px' }} />

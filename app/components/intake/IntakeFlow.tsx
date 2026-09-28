@@ -128,7 +128,7 @@ export default function ConversationalIntake() {
             <div className={`max-w-[85%] p-5 rounded-2xl transition-all ${
               msg.sender === 'user'
                 ? 'bg-neonBlue-glow text-obsidian-base rounded-tr-none shadow-[0_0_15px_rgba(0,240,255,0.3)] font-medium'
-                : 'bg-obsidian-base border border-obsidian-border text-zinc-300 rounded-tl-none shadow-xl'
+                : 'bg-obsidian-base border border-obsidian-border text-zinc-300 rounded-tl-none shadow-xl shadow-[inset_0_1px_1px_rgba(255,255,255,0.05)]'
             }`}>
               {msg.sender === 'ai' ? (
                 <Typewriter text={msg.text} />
