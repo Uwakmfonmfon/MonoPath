@@ -57,7 +57,7 @@ export default function FocusMode({ onComplete }: { onComplete: () => void }) {
       // PRIORITIZATION LOGIC:
       // If load is > 80% of capacity (20 units), prioritize any 'Rest' tasks
       if (currentLoad > 16) {
-        selectedTask = pendingTasks.find(t => t.type === 'Rest');
+        selectedTask = pendingTasks.find(t => t.type === 'Rest') || null;
       }
 
       // Fallback to first available learning task if no Rest task is needed/available

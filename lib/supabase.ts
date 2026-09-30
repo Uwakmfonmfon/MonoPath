@@ -1,4 +1,4 @@
-import { User, Skill, Level, Task, LifeLedgerEntry, PairingState } from '../types';
+import { User, Skill, Level, Task, LifeLedgerEntry, PairingState, StatCategory } from '../types';
 
 class MockDB {
   private users: User[] = [];
