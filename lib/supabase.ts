@@ -20,8 +20,24 @@ class MockDB {
   }
 
   async updateUserLoad(userId: string, load: number) {
-    const idx = this.users.findIndex(u => u.id === userId);
-    if (idx === -1) throw new Error('User not found');
+    let idx = this.users.findIndex(u => u.id === userId);
+    if (idx === -1) {
+      // Auto-initialize user if not found to prevent crash in mock environment
+      const newUser: User = {
+        id: userId,
+        username: 'Architect',
+        globalWhy: 'Self-actualization',
+        categoryLevels: { Health: 1, Creative: 1, Mind: 1, Social: 1, Career: 1 },
+        categoryXp: { Health: 0, Creative: 0, Mind: 0, Social: 0, Career: 0 },
+        globalLevel: 1,
+        globalXp: 0,
+        currentLoad: load,
+        maxLoad: 20,
+        createdAt: new Date().toISOString(),
+      };
+      this.users.push(newUser);
+      return newUser;
+    }
     this.users[idx].currentLoad = load;
     return this.users[idx];
   }
@@ -110,15 +126,47 @@ class MockDB {
   }
 
   async setGlobalWhy(userId: string, globalWhy: string) {
-    const idx = this.users.findIndex(u => u.id === userId);
-    if (idx === -1) throw new Error('User not found');
+    let idx = this.users.findIndex(u => u.id === userId);
+    if (idx === -1) {
+      // Auto-initialize user if not found to prevent crash in mock environment
+      const newUser: User = {
+        id: userId,
+        username: 'Architect',
+        globalWhy: globalWhy,
+        categoryLevels: { Health: 1, Creative: 1, Mind: 1, Social: 1, Career: 1 },
+        categoryXp: { Health: 0, Creative: 0, Mind: 0, Social: 0, Career: 0 },
+        globalLevel: 1,
+        globalXp: 0,
+        currentLoad: 0,
+        maxLoad: 20,
+        createdAt: new Date().toISOString(),
+      };
+      this.users.push(newUser);
+      return newUser;
+    }
     this.users[idx].globalWhy = globalWhy;
     return this.users[idx];
   }
 
   async updateGlobalXp(userId: string, xpGain: number) {
-    const idx = this.users.findIndex(u => u.id === userId);
-    if (idx === -1) throw new Error('User not found');
+    let idx = this.users.findIndex(u => u.id === userId);
+    if (idx === -1) {
+      // Auto-initialize user if not found to prevent crash in mock environment
+      const newUser: User = {
+        id: userId,
+        username: 'Architect',
+        globalWhy: 'Self-actualization',
+        categoryLevels: { Health: 1, Creative: 1, Mind: 1, Social: 1, Career: 1 },
+        categoryXp: { Health: 0, Creative: 0, Mind: 0, Social: 0, Career: 0 },
+        globalLevel: 1,
+        globalXp: 0,
+        currentLoad: 0,
+        maxLoad: 20,
+        createdAt: new Date().toISOString(),
+      };
+      this.users.push(newUser);
+      idx = this.users.length - 1;
+    }
 
     const user = this.users[idx];
     const oldLevel = user.globalLevel || 1;
@@ -144,8 +192,24 @@ class MockDB {
   }
 
   async updateCategoryXp(userId: string, category: any, xpGain: number) {
-    const idx = this.users.findIndex(u => u.id === userId);
-    if (idx === -1) throw new Error('User not found');
+    let idx = this.users.findIndex(u => u.id === userId);
+    if (idx === -1) {
+      // Auto-initialize user if not found to prevent crash in mock environment
+      const newUser: User = {
+        id: userId,
+        username: 'Architect',
+        globalWhy: 'Self-actualization',
+        categoryLevels: { Health: 1, Creative: 1, Mind: 1, Social: 1, Career: 1 },
+        categoryXp: { Health: 0, Creative: 0, Mind: 0, Social: 0, Career: 0 },
+        globalLevel: 1,
+        globalXp: 0,
+        currentLoad: 0,
+        maxLoad: 20,
+        createdAt: new Date().toISOString(),
+      };
+      this.users.push(newUser);
+      idx = this.users.length - 1;
+    }
 
     const user = this.users[idx];
     const oldLevel = user.categoryLevels[category as StatCategory] || 1;
