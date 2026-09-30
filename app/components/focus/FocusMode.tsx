@@ -89,86 +89,90 @@ export default function FocusMode({ onComplete }: { onComplete: () => void }) {
   };
 
   return (
-    <div className="fixed inset-0 z-50 bg-zinc-950 flex flex-col items-center justify-center p-8 animate-in fade-in duration-500">
-      {/* Load Meter at top */}
-      <div className="absolute top-12 flex flex-col items-center gap-3">
-        <span className="text-xs font-mono text-zinc-500 uppercase tracking-widest">System Load</span>
-        <div className="w-64 h-2 bg-zinc-900 rounded-full overflow-hidden border border-zinc-800">
+    <div className={`fixed inset-0 z-50 flex flex-col items-center justify-center p-8 animate-in fade-in duration-1000 transition-all duration-1000 ${
+      task?.type === 'Rest'
+        ? 'bg-slate-900'
+        : 'bg-obsidian-base'
+    }`}>
+      {/* Subtle radial spotlight effect */}
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(79,205,197,0.05)_0%,transparent_70%)] pointer-events-none" />
+
+      {/* Minimal System Load Indicator */}
+      <div className="absolute top-12 right-12 flex flex-col items-end gap-2 opacity-40 hover:opacity-100 transition-opacity duration-500">
+        <span className="text-[9px] font-mono text-mutedZinc uppercase tracking-widest">System Load</span>
+        <div className="w-32 h-1 bg-obsidian-surface rounded-full overflow-hidden border border-obsidian-border">
           <div
-            className="h-full bg-blue-500 transition-all duration-1000 shadow-[0_0_10px_rgba(59,130,246,0.5)]"
+            className={`h-full transition-all duration-1000 ${
+              load > 16 ? 'bg-red-500' : 'bg-focusTeal'
+            }`}
             style={{ width: `${Math.min((load / 20) * 100, 100)}%` }}
           />
         </div>
-        <span className="text-xs font-mono text-zinc-600">{load} / 20 Units</span>
+        <span className="text-[9px] font-mono text-mutedZinc">{load} / 20 Units</span>
       </div>
 
       {plateauNotification && (
-        <div className="absolute top-24 max-w-md p-4 bg-obsidian-surface border border-neonBlue-accent rounded-2xl shadow-2xl animate-in slide-in-from-top-4 duration-500 z-50">
-          <div className="flex items-start gap-4">
-            <div className="p-2 bg-neonBlue-accent/20 rounded-lg text-neonBlue-accent">
-              <span className="text-xs font-bold uppercase tracking-tighter">Plateau Detected</span>
-            </div>
-            <div className="space-y-2">
-              <p className="text-sm text-zinc-200">{plateauNotification.message}</p>
-              <div className="flex gap-2">
-                <button
-                  onClick={() => setPlateauNotification(null)}
-                  className="text-xs font-mono text-zinc-500 hover:text-white transition-colors"
-                >
-                  Ignore
-                </button>
-                <button
-                  onClick={() => {
-                    if (plateauNotification.action === 'Community') {
-                      // Logic to add to pairing queue
-                      alert("Adding you to the Pairing Queue...");
-                    }
-                    setPlateauNotification(null);
-                  }}
-                  className="text-xs font-mono text-neonBlue-accent hover:text-neonBlue-glow transition-colors"
-                >
-                  Resolve {plateauNotification.action} →
-                </button>
-              </div>
+        <div className="absolute bottom-24 max-w-md p-4 bg-obsidian-surface/80 backdrop-blur-md border border-focusTeal/30 rounded-2xl shadow-2xl animate-in slide-in-from-bottom-4 duration-500 z-50 text-center">
+          <div className="space-y-3">
+            <p className="text-sm text-paperWhite font-mono">{plateauNotification.message}</p>
+            <div className="flex justify-center gap-4">
+              <button
+                onClick={() => setPlateauNotification(null)}
+                className="text-xs font-mono text-mutedZinc hover:text-paperWhite transition-colors"
+              >
+                Ignore
+              </button>
+              <button
+                onClick={() => {
+                  if (plateauNotification.action === 'Community') {
+                    alert("Adding you to the Pairing Queue...");
+                  }
+                  setPlateauNotification(null);
+                }}
+                className="text-xs font-mono text-focusTeal hover:text-focusTeal/80 transition-colors"
+              >
+                Resolve {plateauNotification.action} →
+              </button>
             </div>
           </div>
         </div>
       )}
 
       {task ? (
-        <div className="text-center max-w-3xl space-y-12">
-          <div className="space-y-4">
-            <span className="text-blue-500 font-mono text-sm uppercase tracking-widest block">Right Now</span>
-            <h1 className="text-6xl font-bold font-display text-white leading-tight">
+        <div className="relative z-10 text-center max-w-3xl space-y-16">
+          <div className="space-y-6">
+            <span className={`font-mono text-sm uppercase tracking-widest block ${
+              task.type === 'Rest' ? 'text-slate-400' : 'text-focusTeal'
+            }`}>
+              {task.type === 'Rest' ? 'Recovery Protocol' : 'Active Mastery'}
+            </span>
+            <h1 className="text-6xl md:text-7xl font-bold font-display text-paperWhite leading-tight tracking-tighter">
               {task.title}
             </h1>
-            <p className="text-xl text-zinc-400 max-w-xl mx-auto">
+            <p className="text-xl text-mutedZinc max-w-xl mx-auto leading-relaxed font-light">
               {task.description}
             </p>
           </div>
 
-          <div className="flex flex-col items-center gap-8">
-            <div className="text-7xl font-mono font-light text-zinc-200 tabular-nums">
+          <div className="flex flex-col items-center gap-12">
+            <div className="text-8xl font-mono font-extralight text-paperWhite tabular-nums tracking-tighter">
               {formatTime(timeLeft)}
             </div>
 
-            <div className="flex gap-4">
+            <div className="flex gap-6">
               <button
                 onClick={() => setIsActive(!isActive)}
-                className={`px-8 py-4 rounded-full font-bold transition-all ${
+                className={`px-12 py-4 rounded-full font-bold transition-all duration-500 ${
                   isActive
-                    ? 'bg-zinc-800 text-zinc-400 hover:bg-zinc-700'
-                    : 'bg-blue-600 text-white hover:bg-blue-500 shadow-lg shadow-blue-500/20'
+                    ? 'bg-obsidian-surface text-mutedZinc hover:text-paperWhite border border-obsidian-border'
+                    : 'bg-focusTeal text-obsidian-base hover:scale-105 shadow-[0_0_20px_rgba(79,205,197,0.3)]'
                 }`}
               >
                 {isActive ? 'Pause Session' : 'Start Focus'}
               </button>
               <button
-                onClick={() => {
-                   // Handle task completion
-                   onComplete();
-                }}
-                className="px-8 py-4 rounded-full font-bold bg-zinc-100 text-zinc-900 hover:bg-white transition-all"
+                onClick={() => onComplete()}
+                className="px-12 py-4 rounded-full font-bold bg-transparent text-paperWhite border border-obsidian-border hover:bg-obsidian-surface transition-all"
               >
                 Task Complete
               </button>
@@ -177,9 +181,9 @@ export default function FocusMode({ onComplete }: { onComplete: () => void }) {
         </div>
       ) : (
         <div className="text-center space-y-6">
-          <h1 className="text-4xl font-bold">All clear.</h1>
-          <p className="text-zinc-400">No pending tasks across your paths.</p>
-          <button onClick={onComplete} className="text-blue-500 hover:underline">Return to Dashboard</button>
+          <h1 className="text-4xl font-bold font-display text-paperWhite">All clear.</h1>
+          <p className="text-mutedZinc font-mono">No pending tasks across your paths.</p>
+          <button onClick={onComplete} className="text-focusTeal hover:text-focusTeal/80 transition-colors font-mono uppercase tracking-widest text-xs">Return to Dashboard</button>
         </div>
       )}
     </div>
