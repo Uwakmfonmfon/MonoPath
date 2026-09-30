@@ -31,38 +31,42 @@ export default function Shell({ children }: { children: React.ReactNode }) {
   }, []);
 
   return (
-    <div className="min-h-screen bg-obsidian-base text-white">
-      <header className="fixed top-0 left-0 right-0 z-40 h-16 border-b border-obsidian-border bg-obsidian-base/80 backdrop-blur-md flex items-center justify-between px-6">
-        <div className="flex items-center gap-4">
-          <Link href="/dashboard" className="text-xl font-bold font-display tracking-tighter text-white hover:text-neonBlue-accent transition-colors">
+    <div className="min-h-screen bg-obsidian-base text-paperWhite">
+      <header className="fixed top-0 left-0 right-0 z-40 h-16 border-b border-obsidian-border bg-obsidian-surface/80 backdrop-blur-md grid grid-cols-3 items-center px-6">
+        <div className="flex justify-start">
+          <Link href="/dashboard" className="text-xl font-bold font-display tracking-tighter text-paperWhite hover:text-focusTeal transition-colors">
             MONOPATH
           </Link>
         </div>
 
-        <div className="flex items-center gap-6">
+        <div className="flex justify-center">
+          {/* Reserved for context/breadcrumbs to maintain focus and breathing room */}
+        </div>
+
+        <div className="flex justify-end items-center gap-6">
           {/* Global Character Level Indicator */}
           {user && (
-            <div className="flex items-center gap-3 px-3 py-1 rounded-full bg-obsidian-surface border border-obsidian-border group hover:border-neonBlue-accent transition-all">
+            <div className="flex items-center gap-3 px-3 py-1 rounded-full bg-obsidian-base border border-obsidian-border group hover:border-focusTeal transition-all">
               <div className="flex flex-col items-end">
-                <span className="text-[8px] font-mono text-zinc-500 uppercase tracking-widest leading-none mb-0.5">Global Rank</span>
-                <span className="text-xs font-bold font-mono text-white leading-none">LVL {user.globalLevel || 1}</span>
+                <span className="text-[8px] font-mono text-mutedZinc uppercase tracking-widest leading-none mb-0.5">Global Rank</span>
+                <span className="text-xs font-bold font-mono text-paperWhite leading-none">LVL {user.globalLevel || 1}</span>
               </div>
-              <div className="w-16 h-2 bg-obsidian-base rounded-full overflow-hidden border border-obsidian-border">
+              <div className="w-16 h-1.5 bg-obsidian-base rounded-full overflow-hidden border border-obsidian-border">
                 <div
-                  className="h-full bg-neonBlue-glow shadow-[0_0_8px_#00F0FF] transition-all duration-1000"
+                  className="h-full bg-focusTeal shadow-[0_0_8px_#4FD1C5] transition-all duration-1000"
                   style={{ width: `${getGlobalProgress(user.globalXp || 0, user.globalLevel || 1)}%` }}
                 />
               </div>
-              <UserIcon size={14} className="text-zinc-500 group-hover:text-neonBlue-glow transition-colors" />
+              <UserIcon size={14} className="text-mutedZinc group-hover:text-focusTeal transition-colors" />
             </div>
           )}
 
           <Link
             href="/mastery"
-            className="flex items-center gap-2 px-3 py-1 rounded-full bg-obsidian-surface border border-obsidian-border hover:border-neonBlue-accent transition-all group"
+            className="flex items-center gap-2 px-3 py-1 rounded-full bg-obsidian-base border border-obsidian-border hover:border-focusTeal transition-all group"
           >
-            <Award size={14} className="text-zinc-500 group-hover:text-neonBlue-glow transition-colors" />
-            <span className="text-[10px] font-mono text-zinc-500 group-hover:text-zinc-200 uppercase tracking-widest transition-colors">Mastery</span>
+            <Award size={14} className="text-mutedZinc group-hover:text-focusTeal transition-colors" />
+            <span className="text-[10px] font-mono text-mutedZinc group-hover:text-paperWhite uppercase tracking-widest transition-colors">Mastery</span>
           </Link>
           <LoadMeter currentLoad={load} maxLoad={maxLoad} />
         </div>

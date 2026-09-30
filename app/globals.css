@@ -3,25 +3,48 @@
 @tailwind utilities;
 
 :root {
-  --foreground-rgb: 255, 255, 255;
-  --background-start-rgb: 5, 5, 5;
-  --background-end-rgb: 10, 10, 10;
+  --foreground-rgb: 226, 232, 240;
+  --background-start-rgb: 10, 12, 16;
+  --background-end-rgb: 10, 12, 16;
 
-  /* Architect's Ledger Tokens */
-  --color-obsidian-base: #050505;
-  --color-obsidian-surface: #0A0A0A;
-  --color-obsidian-border: #1A1A1A;
-  --color-neon-blue-glow: #00F0FF;
-  --color-neon-blue-accent: #00B4D8;
-  --color-neon-blue-dim: #0077B6;
+  /* Quiet Focus Tokens */
+  --color-obsidian-base: #0A0C10;
+  --color-obsidian-surface: #14171E;
+  --color-steel-slate: #2D343F;
+  --color-focus-teal: #4FD1C5;
+  --color-paper-white: #E2E8F0;
+  --color-muted-zinc: #718096;
 }
 
 body {
   color: rgb(var(--foreground-rgb));
   background-color: var(--color-obsidian-base);
   background-image:
-    linear-gradient(to right, rgba(26, 26, 26, 0.3) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(26, 26, 26, 0.3) 1px, transparent 1px);
-  background-size: 20px 20px;
+    linear-gradient(to right, rgba(45, 52, 63, 0.1) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(45, 52, 63, 0.1) 1px, transparent 1px);
+  background-size: 40px 40px;
   min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Custom focus states for "Tactile Precision" */
+*:focus-visible {
+  outline: 2px solid var(--color-focus-teal);
+  outline-offset: 2px;
+}
+
+/* Custom scrollbar for the focused space */
+::-webkit-scrollbar {
+  width: 4px;
+}
+::-webkit-scrollbar-track {
+  background: var(--color-obsidian-base);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-steel-slate);
+  border-radius: 10px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-focus-teal);
 }
