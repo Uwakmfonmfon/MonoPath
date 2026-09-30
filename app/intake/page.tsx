@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Suspense } from 'react';
 import IntakeFlow from '@/app/components/intake/IntakeFlow';
 
 export default function IntakePage() {
@@ -11,7 +11,9 @@ export default function IntakePage() {
             Tell us what you want to master. We'll synthesize the noise into a single sequence.
           </p>
         </header>
-        <IntakeFlow />
+        <Suspense fallback={<div className="text-center text-zinc-500 font-mono animate-pulse">Initializing Architect...</div>}>
+          <IntakeFlow />
+        </Suspense>
       </div>
     </div>
   );
