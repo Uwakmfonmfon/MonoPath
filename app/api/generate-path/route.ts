@@ -96,6 +96,8 @@ export async function POST(req: NextRequest) {
         status: 'Active',
         intakeData: intake,
         createdAt: new Date().toISOString(),
+        plateauState: 'None',
+        isInZone: false,
       });
     }
 
@@ -125,6 +127,8 @@ export async function POST(req: NextRequest) {
           estimatedLoad: t.load,
           xpReward: t.xp,
           status: 'Pending',
+          type: t.type || 'Learning',
+          attempts: 0,
         });
       }
     }
