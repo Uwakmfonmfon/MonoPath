@@ -211,14 +211,14 @@ export default function TaskBoard({ skillId = 'default_skill' }: { skillId?: str
         : ''
     }`}>
       {pairingState === 'SEARCHING' && (
-        <PairingQueueStatus userId="user_1" skillName={skill?.name || 'Skill'} />
+        <PairingQueueStatus />
       )}
 
       {pairingState === 'MATCHED' && skill && (
         <MatchFoundModal
-          skill={skill}
+          match={matchPartner}
           onBreakthrough={handleBreakthrough}
-          onCancel={() => setPairingState('IDLE')}
+          onClose={() => setPairingState('IDLE')}
         />
       )}
 

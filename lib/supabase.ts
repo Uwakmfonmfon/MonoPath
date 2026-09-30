@@ -148,13 +148,13 @@ class MockDB {
     if (idx === -1) throw new Error('User not found');
 
     const user = this.users[idx];
-    const oldLevel = user.categoryLevels[category] || 1;
+    const oldLevel = user.categoryLevels[category as StatCategory] || 1;
 
-    user.categoryXp[category] = (user.categoryXp[category] || 0) + xpGain;
+    user.categoryXp[category as StatCategory] = (user.categoryXp[category as StatCategory] || 0) + xpGain;
 
     // Simple category leveling: 1 level per 500 XP
-    const newLevel = Math.floor(user.categoryXp[category] / 500) + 1;
-    user.categoryLevels[category] = newLevel;
+    const newLevel = Math.floor(user.categoryXp[category as StatCategory] / 500) + 1;
+    user.categoryLevels[category as StatCategory] = newLevel;
 
     if (newLevel > oldLevel) {
       await this.logEvent({

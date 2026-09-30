@@ -40,7 +40,9 @@ export default function FocusMode({ onComplete }: { onComplete: () => void }) {
           activeSkill.plateauState === 'Confusion' ? 4 : 0, // Mocking attempts based on existing state
           1, // Mock completions
           0,
-          currentLoad
+          currentLoad,
+          activeSkill.hoursInvested || 0,
+          0 // Default progress
         );
 
         if (plateau !== 'None') {
@@ -60,7 +62,7 @@ export default function FocusMode({ onComplete }: { onComplete: () => void }) {
 
       // Fallback to first available learning task if no Rest task is needed/available
       if (!selectedTask && pendingTasks.length > 0) {
-        selectedTask = pendingTasks[0];
+        selectedTask = pendingTasks[0] || null;
       }
 
       setTask(selectedTask);

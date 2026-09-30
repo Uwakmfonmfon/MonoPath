@@ -18,6 +18,9 @@ export default function LifeLedger() {
         currentLoad: userData?.currentLoad || 0,
         maxLoad: userData?.maxLoad || 10,
         createdAt: userData?.createdAt || new Date().toISOString(),
+        globalWhy: userData?.globalWhy || 'Undefined',
+        globalLevel: userData?.globalLevel || 1,
+        globalXp: userData?.globalXp || 0,
         categoryLevels: userData?.categoryLevels || {
           Health: 1, Creative: 1, Mind: 1, Social: 1, Career: 1
         },

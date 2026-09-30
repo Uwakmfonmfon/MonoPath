@@ -44,6 +44,9 @@ export default function ConversationalIntake() {
     why: '',
     where: '',
     depth: 'competence',
+    experienceLevel: '',
+    availableTime: '',
+    deadline: undefined as string | undefined,
   });
   const [isConfirmed, setIsConfirmed] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -202,8 +205,8 @@ export default function ConversationalIntake() {
               <p>CONTEXT: <span className="text-white font-bold">{formData.where}</span></p>
               <p>DEPTH: <span className="text-white font-bold uppercase">{formData.depth}</span></p>
               <p>DRIVER: <span className="text-white font-bold">{formData.why}</span></p>
-              <p>EXPERIENCE: <span className="text-white font-bold">{formData.experienceLevel}</span></p>
-              <p>TIME: <span className="text-white font-bold">{formData.availableTime}</span></p>
+              <p>EXPERIENCE: <span className="text-white font-bold">{formData.experienceLevel || 'Not provided'}</span></p>
+              <p>TIME: <span className="text-white font-bold">{formData.availableTime || 'Not provided'}</span></p>
               {formData.deadline && <p>DEADLINE: <span className="text-white font-bold">{formData.deadline}</span></p>}
             </div>
 

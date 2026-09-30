@@ -127,7 +127,7 @@ export async function POST(req: NextRequest) {
           estimatedLoad: t.load,
           xpReward: t.xp,
           status: 'Pending',
-          type: t.type || 'Learning',
+          type: t.type as 'Learning' | 'Rest',
           attempts: 0,
         });
       }
