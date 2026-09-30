@@ -38,14 +38,11 @@ export default function TaskBoard({ skillId = 'default_skill' }: { skillId?: str
 
     // Diagnosis: check for plateaus
     const currentLoad = await calculateTotalLoad('user_1');
-    const levelProgress = levels.filter(l => l.isCompleted).length / levels.length;
     const plateau = detectPlateau(
       currentSkill.plateauState === 'Confusion' ? 4 : 0, // Mock attempts
       1,
       0,
-      currentLoad,
-      currentSkill.hoursInvested || 0,
-      levelProgress
+      currentLoad
     );
 
     if (plateau !== 'None') {
@@ -124,14 +121,6 @@ export default function TaskBoard({ skillId = 'default_skill' }: { skillId?: str
     // Update global system load upon task completion
     const newLoad = await calculateTotalLoad('user_1');
     await db.updateUserLoad('user_1', newLoad);
-
-    // Update Global Character Level
-    await db.updateGlobalXp('user_1', task.xpReward);
-
-    // Update Category Level
-    if (skill) {
-      await db.updateCategoryXp('user_1', skill.category, task.xpReward);
-    }
 
     await checkLevelCompletion();
   }

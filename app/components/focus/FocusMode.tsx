@@ -1,46 +1,69 @@
 import React, { useState, useEffect } from 'react';
 import { db } from '@/lib/supabase';
-import { Task } from '@/types';
+import { calculateTotalLoad } from '@/lib/load-utils';
+import { Task, Skill } from '@/types';
+import { detectPlateau, getBreakthroughAction } from '@/lib/plateau-detection';
 
 export default function FocusMode({ onComplete }: { onComplete: () => void }) {
   const [task, setTask] = useState<Task | null>(null);
   const [timeLeft, setTimeLeft] = useState(25 * 60); // 25m default
   const [isActive, setIsActive] = useState(false);
   const [load, setLoad] = useState(0);
+  const [plateauNotification, setPlateauNotification] = useState<{ message: string; action: string } | null>(null);
 
   useEffect(() => {
     async function initFocus() {
-      // Pick one "right now" task from all active boards
-      // Logic: Find first Pending task from the lowest active level across all skills
-      const skills = await db.getSkills('user_1');
+      const userId = 'user_1';
+      const skills = await db.getSkills(userId);
+
+      // Calculate current total load
+      const currentLoad = await calculateTotalLoad(userId);
+      setLoad(currentLoad);
+
       let selectedTask: Task | null = null;
+      const pendingTasks: Task[] = [];
 
       for (const skill of skills) {
         const levels = await db.getLevels(skill.id);
         const activeLevel = levels.find(l => !l.isCompleted);
         if (activeLevel) {
           const tasks = await db.getTasks(activeLevel.id);
-          const pendingTask = tasks.find(t => t.status === 'Pending');
-          if (pendingTask) {
-            selectedTask = pendingTask;
-            break;
-          }
+          const pending = tasks.filter(t => t.status === 'Pending');
+          pendingTasks.push(...pending);
         }
+      }
+
+      // DIAGNOSIS: Check for plateaus on the current skill
+      if (skills.length > 0) {
+        const activeSkill = skills[0]; // Simplified for now
+        const plateau = detectPlateau(
+          activeSkill.plateauState === 'Confusion' ? 4 : 0, // Mocking attempts based on existing state
+          1, // Mock completions
+          0,
+          currentLoad
+        );
+
+        if (plateau !== 'None') {
+          const breakthrough = getBreakthroughAction(plateau);
+          setPlateauNotification({
+            message: breakthrough.message,
+            action: breakthrough.action
+          });
+        }
+      }
+
+      // PRIORITIZATION LOGIC:
+      // If load is > 80% of capacity (20 units), prioritize any 'Rest' tasks
+      if (currentLoad > 16) {
+        selectedTask = pendingTasks.find(t => t.type === 'Rest');
+      }
+
+      // Fallback to first available learning task if no Rest task is needed/available
+      if (!selectedTask && pendingTasks.length > 0) {
+        selectedTask = pendingTasks[0];
       }
 
       setTask(selectedTask);
-
-      // Calculate current total load for the meter
-      let totalLoad = 0;
-      for (const skill of skills) {
-        const levels = await db.getLevels(skill.id);
-        const activeLevel = levels.find(l => !l.isCompleted);
-        if (activeLevel) {
-          const tasks = await db.getTasks(activeLevel.id);
-          totalLoad += tasks.filter(t => t.status === 'Pending').reduce((acc, t) => acc + t.estimatedLoad, 0);
-        }
-      }
-      setLoad(totalLoad);
     }
 
     initFocus();
@@ -76,6 +99,39 @@ export default function FocusMode({ onComplete }: { onComplete: () => void }) {
         </div>
         <span className="text-xs font-mono text-zinc-600">{load} / 20 Units</span>
       </div>
+
+      {plateauNotification && (
+        <div className="absolute top-24 max-w-md p-4 bg-obsidian-surface border border-neonBlue-accent rounded-2xl shadow-2xl animate-in slide-in-from-top-4 duration-500 z-50">
+          <div className="flex items-start gap-4">
+            <div className="p-2 bg-neonBlue-accent/20 rounded-lg text-neonBlue-accent">
+              <span className="text-xs font-bold uppercase tracking-tighter">Plateau Detected</span>
+            </div>
+            <div className="space-y-2">
+              <p className="text-sm text-zinc-200">{plateauNotification.message}</p>
+              <div className="flex gap-2">
+                <button
+                  onClick={() => setPlateauNotification(null)}
+                  className="text-xs font-mono text-zinc-500 hover:text-white transition-colors"
+                >
+                  Ignore
+                </button>
+                <button
+                  onClick={() => {
+                    if (plateauNotification.action === 'Community') {
+                      // Logic to add to pairing queue
+                      alert("Adding you to the Pairing Queue...");
+                    }
+                    setPlateauNotification(null);
+                  }}
+                  className="text-xs font-mono text-neonBlue-accent hover:text-neonBlue-glow transition-colors"
+                >
+                  Resolve {plateauNotification.action} →
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {task ? (
         <div className="text-center max-w-3xl space-y-12">

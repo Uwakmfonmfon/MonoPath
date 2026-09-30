@@ -19,6 +19,20 @@ class MockDB {
     return user;
   }
 
+  async updateUserLoad(userId: string, load: number) {
+    const idx = this.users.findIndex(u => u.id === userId);
+    if (idx === -1) throw new Error('User not found');
+    this.users[idx].currentLoad = load;
+    return this.users[idx];
+  }
+
+  async updateSkill(skillId: string, updates: Partial<Skill>) {
+    const idx = this.skills.findIndex(s => s.id === skillId);
+    if (idx === -1) throw new Error('Skill not found');
+    this.skills[idx] = { ...this.skills[idx], ...updates };
+    return this.skills[idx];
+  }
+
   async getSkills(userId: string) {
     return this.skills.filter(s => s.userId === userId);
   }
@@ -82,11 +96,78 @@ class MockDB {
       p.skillId === userState.skillId
     );
 
+    if (match) {
+      // Remove both from queue once matched
+      this.removeFromQueue(userId);
+      this.removeFromQueue(match.userId);
+    }
+
     return match || null;
   }
 
   async removeFromQueue(userId: string) {
     this.pairingQueue = this.pairingQueue.filter(p => p.userId !== userId);
+  }
+
+  async setGlobalWhy(userId: string, globalWhy: string) {
+    const idx = this.users.findIndex(u => u.id === userId);
+    if (idx === -1) throw new Error('User not found');
+    this.users[idx].globalWhy = globalWhy;
+    return this.users[idx];
+  }
+
+  async updateGlobalXp(userId: string, xpGain: number) {
+    const idx = this.users.findIndex(u => u.id === userId);
+    if (idx === -1) throw new Error('User not found');
+
+    const user = this.users[idx];
+    const oldLevel = user.globalLevel || 1;
+
+    user.globalXp = (user.globalXp || 0) + xpGain;
+
+    // Import dynamic to avoid circular dependency if level-utils eventually imports db
+    const { calculateGlobalLevel } = await import('./level-utils');
+    user.globalLevel = calculateGlobalLevel(user.globalXp);
+
+    if (user.globalLevel > oldLevel) {
+      await this.logEvent({
+        id: `event_lvlup_${Date.now()}`,
+        userId,
+        timestamp: new Date().toISOString(),
+        eventType: 'LevelUp',
+        description: `Global Character Level Up! Reached Level ${user.globalLevel}`,
+        snapshotData: { oldLevel, newLevel: user.globalLevel, totalXp: user.globalXp }
+      });
+    }
+
+    return user;
+  }
+
+  async updateCategoryXp(userId: string, category: any, xpGain: number) {
+    const idx = this.users.findIndex(u => u.id === userId);
+    if (idx === -1) throw new Error('User not found');
+
+    const user = this.users[idx];
+    const oldLevel = user.categoryLevels[category] || 1;
+
+    user.categoryXp[category] = (user.categoryXp[category] || 0) + xpGain;
+
+    // Simple category leveling: 1 level per 500 XP
+    const newLevel = Math.floor(user.categoryXp[category] / 500) + 1;
+    user.categoryLevels[category] = newLevel;
+
+    if (newLevel > oldLevel) {
+      await this.logEvent({
+        id: `event_cat_lvlup_${Date.now()}`,
+        userId,
+        timestamp: new Date().toISOString(),
+        eventType: 'LevelUp',
+        description: `Category Level Up! Your ${category} stats reached Level ${newLevel}`,
+        snapshotData: { category, oldLevel, newLevel }
+      });
+    }
+
+    return user;
   }
 }
 

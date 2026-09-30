@@ -1,5 +1,6 @@
 "use client";
 import React, { useState, useEffect, useRef } from 'react';
+import { useSearchParams } from 'next/navigation';
 
 type Message = {
   sender: 'ai' | 'user';
@@ -31,19 +32,33 @@ function Typewriter({ text, onComplete }: { text: string; onComplete?: () => voi
 }
 
 export default function ConversationalIntake() {
-  const [messages, setMessages] = useState<Message[]>([
-    { sender: 'ai', text: "Hello. I am the Path Architect. To build your journey, I need to understand your intent. First: What are you looking to master?" }
-  ]);
+  const searchParams = useSearchParams();
+  const initialGoal = searchParams.get('goal');
+  const initialCat = searchParams.get('cat');
+
+  const [messages, setMessages] = useState<Message[]>([]);
   const [inputValue, setInputValue] = useState('');
   const [step, setStep] = useState('goal');
   const [formData, setFormData] = useState({
-    goal: '',
+    goal: initialGoal || '',
     why: '',
     where: '',
     depth: 'competence',
   });
   const [isConfirmed, setIsConfirmed] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (initialGoal) {
+      const welcomeMsg = `I've architected a suggestion for you: ${initialGoal} in the ${initialCat} category. Does this align with your intent?`;
+      setMessages([{ sender: 'ai', text: welcomeMsg }]);
+      setStep('confirm_suggested');
+    } else {
+      setMessages([
+        { sender: 'ai', text: "Hello. I am the Path Architect. To build your journey, I need to understand your intent. First: What are you looking to master?" }
+      ]);
+    }
+  }, [initialGoal]);
 
   useEffect(() => {
     if (scrollRef.current) {
@@ -63,23 +78,61 @@ export default function ConversationalIntake() {
     }, 800);
   };
 
-  const processResponse = (text: string) => {
+  const processResponse = async (text: string) => {
     let aiResponse = '';
 
-    if (step === 'goal') {
-      setFormData(prev => ({ ...prev, goal: text }));
-      setStep('why');
-      aiResponse = `"${text}" sounds like a worthy pursuit. Now, tell me the "why"—what's the deeper driver behind this goal?`;
+    // --- AI-Driven Dynamic Validation ---
+    // In a real app, this would be an LLM call. For this v1, we simulate the "Vagueness Check".
+    const isVague = (t: string) => t.length < 10 || t.split(' ').length < 3;
+
+    if (step === 'confirm_suggested') {
+      if (text.toLowerCase().includes('yes') || text.toLowerCase().includes('agree') || text.toLowerCase().includes('align')) {
+        setStep('why');
+        aiResponse = `Excellent. Now, tell me the "why"—what's the deeper driver behind this goal?`;
+      } else {
+        setStep('goal');
+        aiResponse = "Understood. Let's pivot. What exactly are you looking to master?";
+      }
+    } else if (step === 'goal') {
+      if (isVague(text)) {
+        aiResponse = `"${text}" is a bit vague. Could you be more specific about what exactly you want to achieve within this goal?`;
+      } else {
+        setFormData(prev => ({ ...prev, goal: text }));
+        setStep('why');
+        aiResponse = `"${text}" sounds like a worthy pursuit. Now, tell me the "why"—what's the deeper driver behind this goal?`;
+      }
     } else if (step === 'why') {
-      setFormData(prev => ({ ...prev, why: text }));
-      setStep('where');
-      aiResponse = "I understand. And where do you see yourself applying this skill in the real world?";
+      if (isVague(text)) {
+        aiResponse = `I want to understand the heartbeat of this goal. Why is this important to you right now?`;
+      } else {
+        setFormData(prev => ({ ...prev, why: text }));
+        setStep('where');
+        aiResponse = "I understand. And where do you see yourself applying this skill in the real world?";
+      }
     } else if (step === 'where') {
-      setFormData(prev => ({ ...prev, where: text }));
-      setStep('depth');
-      aiResponse = "Finally, how far do you want to take this? Are you looking for casual dabbling, conversational competence, or total mastery?";
+      if (isVague(text)) {
+        aiResponse = `Could you give me a concrete example of where you'll use this? (e.g., "at my job", "during a trip to Tokyo")`;
+      } else {
+        setFormData(prev => ({ ...prev, where: text }));
+        setStep('depth');
+        aiResponse = "Finally, how far do you want to take this? Are you looking for casual dabbling, conversational competence, or total mastery?";
+      }
     } else if (step === 'depth') {
-      setFormData(prev => ({ ...prev, depth: text.toLowerCase().includes('master') ? 'mastery' : text.toLowerCase().includes('casual') ? 'casual' : 'competence' }));
+      // Capture depth and move to the new supplemental fields
+      const depth = text.toLowerCase().includes('master') ? 'mastery' : text.toLowerCase().includes('casual') ? 'casual' : 'competence';
+      setFormData(prev => ({ ...prev, depth }));
+      setStep('experience');
+      aiResponse = "Almost there. To calibrate the starting point: what is your current experience level with this? (e.g., 'Complete beginner', 'Some basics', 'Intermediate')";
+    } else if (step === 'experience') {
+      setFormData(prev => ({ ...prev, experienceLevel: text }));
+      setStep('time');
+      aiResponse = "And how much time can you realistically commit to this per week?";
+    } else if (step === 'time') {
+      setFormData(prev => ({ ...prev, availableTime: text }));
+      setStep('deadline');
+      aiResponse = "Lastly, is there a specific deadline or occasion driving this? (If not, just say 'none')";
+    } else if (step === 'deadline') {
+      setFormData(prev => ({ ...prev, deadline: text === 'none' ? undefined : text }));
       setStep('confirmation');
       aiResponse = "I have enough information to architect your path. Please review the summary below to ensure I've captured your intent correctly.";
     }
@@ -149,6 +202,9 @@ export default function ConversationalIntake() {
               <p>CONTEXT: <span className="text-white font-bold">{formData.where}</span></p>
               <p>DEPTH: <span className="text-white font-bold uppercase">{formData.depth}</span></p>
               <p>DRIVER: <span className="text-white font-bold">{formData.why}</span></p>
+              <p>EXPERIENCE: <span className="text-white font-bold">{formData.experienceLevel}</span></p>
+              <p>TIME: <span className="text-white font-bold">{formData.availableTime}</span></p>
+              {formData.deadline && <p>DEADLINE: <span className="text-white font-bold">{formData.deadline}</span></p>}
             </div>
 
             <div className="flex gap-4 pt-4">

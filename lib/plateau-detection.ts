@@ -6,7 +6,9 @@ export function detectPlateau(
   attempts: number,
   completions: number,
   avgTimePerTask: number,
-  globalLoad: number
+  globalLoad: number,
+  hoursInvested: number,
+  levelProgress: number
 ): PlateauType {
   // 1. The "Wall" (Confusion)
   // High attempt rate but low completion rate = cognitive struggle
@@ -17,6 +19,12 @@ export function detectPlateau(
   // 2. The "Slump" (Motivation)
   // Low activity overall, low load = lack of momentum
   if (attempts < 1 && globalLoad < 5) {
+    return 'Motivation';
+  }
+
+  // 3. Stagnation (Motivation/Burnout)
+  // High total hours but very low progress in the current skill
+  if (hoursInvested > 20 && levelProgress < 0.2) {
     return 'Motivation';
   }
 
