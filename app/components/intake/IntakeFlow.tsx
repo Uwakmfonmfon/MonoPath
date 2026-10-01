@@ -1,6 +1,6 @@
 "use client";
 import React, { useState, useEffect, useRef } from 'react';
-import { useSearchParams } from 'next/navigation';
+import { useSearchParams, useRouter } from 'next/navigation';
 
 type Message = {
   sender: 'ai' | 'user';
@@ -33,6 +33,7 @@ function Typewriter({ text, onComplete }: { text: string; onComplete?: () => voi
 
 export default function ConversationalIntake() {
   const searchParams = useSearchParams();
+  const router = useRouter();
   const initialGoal = searchParams.get('goal');
   const initialCat = searchParams.get('cat');
 
@@ -156,6 +157,7 @@ export default function ConversationalIntake() {
 
     if (response.ok) {
       alert('Your personalized path has been initialized. Welcome to MonoPath.');
+      router.push('/dashboard');
     }
   };
 
